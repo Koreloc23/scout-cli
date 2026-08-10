@@ -9,6 +9,8 @@ on:
     paths:
       - 'docs/**.yaml'
       - 'tests/**'
+    
+  workflow_dispatch:
 
 jobs:
   validate:
