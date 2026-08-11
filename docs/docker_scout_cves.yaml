@@ -566,5 +566,5 @@ experimentalcli: false
 kubernetes: false
 swarm: false
 
-# demo: second validation test
+# demo: second validation of workflow
 
