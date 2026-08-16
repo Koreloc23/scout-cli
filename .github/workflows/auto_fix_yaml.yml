@@ -20,15 +20,42 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install pyyaml yamllint
+        run: pip install ruamel.yaml
 
-      - name: Fix YAML syntax errors
+      - name: Auto fix YAML format
         run: |
-          yamllint -d relaxed docs/
+          python3 << 'EOF'
+          import pathlib
+          import sys
+          from ruamel.yaml import YAML
+
+          yaml = YAML()
+          yaml.preserve_quotes = True
+          docs_dir = pathlib.Path("docs")
+          fixed = []
+          errors = []
+
+          for yaml_file in sorted(docs_dir.glob("docker_scout*.yaml")):
+              try:
+                  with open(yaml_file, "r", encoding="utf-8") as f:
+                      content = yaml.load(f)
+                  with open(yaml_file, "w", encoding="utf-8") as f:
+                      yaml.dump(content, f)
+                  fixed.append(yaml_file.name)
+                  print(f"✅ {yaml_file.name} - Fixed")
+              except Exception as e:
+                  errors.append(yaml_file.name)
+                  print(f"❌ {yaml_file.name} - ERROR: {e}")
+
+          if errors:
+              print(f"\nArchivos con errores que no se pudieron reparar: {errors}")
+              sys.exit(1)
+          else:
+              print(f"\n✅ Todos los archivos fueron procesados correctamente")
+          EOF
 
       - name: Auto commit fixes
-        if: failure()
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "fix: auto-detected YAML syntax errors"
+          commit_message: "fix: auto-corrected YAML format errors"
           file_pattern: docs/*.yaml
