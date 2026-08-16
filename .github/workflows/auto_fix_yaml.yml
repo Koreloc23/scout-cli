@@ -20,34 +20,11 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install pyyaml
+        run: pip install pyyaml yamllint
 
       - name: Fix YAML syntax errors
         run: |
-          python3 << 'EOF'
-          import yaml
-          import pathlib
-          import sys
-
-          docs_dir = pathlib.Path("docs")
-          errors_found = []
-
-          for yaml_file in sorted(docs_dir.glob("docker_scout*.yaml")):
-              try:
-                  with open(yaml_file, "r", encoding="utf-8") as f:
-                      content = f.read()
-                  yaml.safe_load(content)
-                  print(f"✅ {yaml_file.name} - OK")
-              except yaml.YAMLError as e:
-                  errors_found.append(yaml_file.name)
-                  print(f"❌ {yaml_file.name} - ERROR: {e}")
-
-          if errors_found:
-              print(f"\nArchivos con errores: {errors_found}")
-              sys.exit(1)
-          else:
-              print("\n✅ Todos los archivos YAML son válidos")
-          EOF
+          yamllint -d relaxed docs/
 
       - name: Auto commit fixes
         if: failure()
