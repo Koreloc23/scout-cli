@@ -23,8 +23,7 @@ options:
 - option: policy-file
   value_type: stringArray
   default_value: '[]'
-  description: Path or http(s) URL to a .rego policy file to include 
-    (repeatable)
+  description: Path or http(s) URL to a .rego policy file to include (repeatable)
   deprecated: false
   hidden: false
   experimental: false
@@ -52,12 +51,7 @@ inherited_options:
   experimentalcli: false
   kubernetes: false
   swarm: false
-examples: "  Publish the built-in default policies:\n  $ docker scout policy publish
-  registry.example.com/policies:latest\e[0m\n\n  Publish a directory of local policies:\n\
-  \  $ docker scout policy publish --policy-dir ./rego registry.example.com/policies:latest\e\
-  [0m\n\n  Publish specific policy files:\n  $ docker scout policy publish --policy-file
-  fixable.rego --policy-file licenses.rego registry.example.com/policies:latest\e\
-  [0m"
+examples: "  Publish the built-in default policies:\n  $ docker scout policy publish registry.example.com/policies:latest\e[0m\n\n  Publish a directory of local policies:\n  $ docker scout policy publish --policy-dir ./rego registry.example.com/policies:latest\e[0m\n\n  Publish specific policy files:\n  $ docker scout policy publish --policy-file fixable.rego --policy-file licenses.rego registry.example.com/policies:latest\e[0m"
 deprecated: false
 experimental: false
 experimentalcli: true
