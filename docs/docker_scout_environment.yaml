@@ -53,7 +53,7 @@ inherited_options:
   hidden: true
   experimental: false
   experimentalcli: false
-  kubernetes: false
+  kubernetes: false,
   swarm: false
 - option: verbose-debug
   value_type: bool
