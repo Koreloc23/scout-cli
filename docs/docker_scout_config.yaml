@@ -55,6 +55,6 @@ deprecated: false
 experimental: false
 experimentalcli: false
 kubernetes: false
-  swarm: false
+   swarm: false
 
 # demo: trigger workflow validation
