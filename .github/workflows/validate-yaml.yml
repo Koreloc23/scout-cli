@@ -9,8 +9,11 @@ on:
     paths:
       - 'docs/**.yaml'
       - 'tests/**'
-    
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Auto Fix YAML Syntax"]
+    types:
+      - completed
 
 jobs:
   validate:
@@ -18,6 +21,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -36,4 +41,3 @@ jobs:
         with:
           name: reporte-pruebas
           path: reporte.html
-          
