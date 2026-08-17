@@ -43,10 +43,10 @@ jobs:
               try:
                   text = yaml_file.read_text(encoding="utf-8")
 
-                  # Quita comas/puntos sobrantes pegados a valores booleanos
-                  # ej: "false," o "false." -> "false"
+                  # Si el valor empieza con true/false, descarta todo lo que
+                  # venga después en esa línea (letras, números, comas, espacios, etc.)
                   fixed_text = re.sub(
-                      r'^(\s*[\w-]+:\s*(?:true|false))[.,]+(\s*)$',
+                      r'^(\s*[\w-]+:\s*)(true|false).*$',
                       r'\1\2',
                       text,
                       flags=re.MULTILINE
