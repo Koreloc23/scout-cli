@@ -27,8 +27,7 @@ options:
   swarm: false
 - option: org
   value_type: string
-  description: Namespace of the Docker organization to which image will be 
-    pushed
+  description: Namespace of the Docker organization to which image will be pushed
   deprecated: false
   hidden: false
   experimental: false
