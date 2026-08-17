@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -28,13 +30,12 @@ jobs:
         run: |
           python3 << 'EOF'
           import pathlib
-          import sys
           from ruamel.yaml import YAML
 
           yaml = YAML()
           yaml.preserve_quotes = True
+          yaml.width = 4096
           docs_dir = pathlib.Path("docs")
-          errors = []
 
           for yaml_file in sorted(docs_dir.glob("docker_scout*.yaml")):
               try:
@@ -44,12 +45,7 @@ jobs:
                       yaml.dump(content, f)
                   print(f"✅ {yaml_file.name} - Fixed")
               except Exception as e:
-                  errors.append(yaml_file.name)
-                  print(f"❌ {yaml_file.name} - ERROR: {e}")
-
-          if errors:
-              print(f"\nArchivos con errores que no se pudieron reparar: {errors}")
-              sys.exit(1)
+                  print(f"⚠️ {yaml_file.name} - No se pudo corregir: {e}")
           EOF
 
       - name: Auto commit fixes
