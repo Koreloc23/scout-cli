@@ -1,12 +1,14 @@
 name: Auto Fix YAML Syntax
 
 on:
-  push:
-    paths:
-      - 'docs/**.yaml'
+  workflow_run:
+    workflows: ["Validate YAML Schema"]
+    types:
+      - completed
 
 jobs:
   autofix:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,7 +34,6 @@ jobs:
           yaml = YAML()
           yaml.preserve_quotes = True
           docs_dir = pathlib.Path("docs")
-          fixed = []
           errors = []
 
           for yaml_file in sorted(docs_dir.glob("docker_scout*.yaml")):
@@ -41,7 +42,6 @@ jobs:
                       content = yaml.load(f)
                   with open(yaml_file, "w", encoding="utf-8") as f:
                       yaml.dump(content, f)
-                  fixed.append(yaml_file.name)
                   print(f"✅ {yaml_file.name} - Fixed")
               except Exception as e:
                   errors.append(yaml_file.name)
@@ -50,8 +50,6 @@ jobs:
           if errors:
               print(f"\nArchivos con errores que no se pudieron reparar: {errors}")
               sys.exit(1)
-          else:
-              print(f"\n✅ Todos los archivos fueron procesados correctamente")
           EOF
 
       - name: Auto commit fixes
